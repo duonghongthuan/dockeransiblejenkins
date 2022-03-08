@@ -50,8 +50,8 @@ pipeline {
             steps {
                 withSonarQubeEnv(credentialsId: 'sonarqube_access_token', installationName: 'sonarqube-container') {
                     sh '''$SCANNER_HOME/bin/sonar-scanner \
-                    -Dsonar.projectKey=laravel-cicd \
-                    -Dsonar.projectName=laravel-cicd \
+                    -Dsonar.projectKey=laravel-ansible-docker \
+                    -Dsonar.projectName=laravel-ansible-docker \
                     -Dsonar.sources=app/ \
                     -Dsonar.language=php \
                     -Dsonar.exclusions=app/Providers/** \
