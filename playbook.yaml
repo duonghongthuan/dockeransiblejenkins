@@ -2,12 +2,6 @@
 - hosts: staging
   become: True
   tasks:
-    ---
-- name: Install Docker
-  gather_facts: No
-  hosts: docker
- 
-  tasks:
     - name: Install yum utils
       yum:
         name: yum-utils
@@ -41,7 +35,6 @@
         state: started
         enabled: yes
       become: yes
-      ignore_errors: yes
 
     - name: Check if Docker Compose is installed
       command: docker-compose --version
