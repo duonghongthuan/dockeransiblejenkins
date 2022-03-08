@@ -79,7 +79,7 @@ pipeline {
         
         stage('Docker deploy with ansible'){
             steps{
-                ansiblePlaybook credentialsId: 'srv_102', disableHostKeyChecking: true, extras: 'DOCKER_REGISTRY="${DOCKER_REGISTRY}" DOCKER_IMAGE="${DOCKER_IMAGE}" DOCKER_TAG="${DOCKER_TAG}"', installation: 'ansible', inventory: 'inventory.yaml', playbook: 'playbook.yaml'
+                ansiblePlaybook credentialsId: '102SSH', disableHostKeyChecking: true, extras: 'DOCKER_REGISTRY="${DOCKER_REGISTRY}" DOCKER_IMAGE="${DOCKER_IMAGE}" DOCKER_TAG="${DOCKER_TAG}"', installation: 'ansible', inventory: 'inventory.yaml', playbook: 'playbook.yaml'
             }
         }
     }
