@@ -43,5 +43,8 @@
   - name: Docker login registry.d2t.vn
     command: docker login -u duonghongthuan -p "abc123^%$" registry.d2t.vn
 
+  - name: Stop container old
+    command: docker rm -f laravel-ansible-docker
+
   - name: Start the container
     command: docker run --rm -p 9999:80 --name laravel-ansible-docker -d registry.d2t.vn/laravel-ansible-docker:master-d7bc3bc
