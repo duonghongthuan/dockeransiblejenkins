@@ -54,6 +54,8 @@
       when:
         - docker_compose_check.msg is defined
         - docker_compose_check.msg.find('No such file or directory') != -1
+
+    - name: Docker login registry.d2t.vn
       docker_login:
         registry: registry.d2t.vn
         username: duonghongthuan
