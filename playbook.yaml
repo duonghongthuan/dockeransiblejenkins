@@ -2,46 +2,46 @@
 - hosts: staging
   become: True
   tasks:
-    - name: Install python pip
+    ---
+- name: Install Docker
+  gather_facts: No
+  hosts: docker
+ 
+  tasks:
+    - name: Install yum utils
       yum:
-        name: python-pip
-        state: present
-    - name: Check if Docker is installed
-      command: systemctl status docker
-      register: docker_check
-      ignore_errors: yes
-
-    - name: Download the Docker installer
+        name: yum-utils
+        state: latest
+ 
+    - name: Install device-mapper-persistent-data
+      yum:
+        name: device-mapper-persistent-data
+        state: latest
+ 
+    - name: Install lvm2
+      yum:
+        name: lvm2
+        state: latest
+ 
+    - name: Add Docker repo
       get_url:
-        url: https://get.docker.com/
-        dest: /root/install_docker.sh
-        mode: 0700
-      when: docker_check.stderr.find('service could not be found') != -1
-
+        url: https://download.docker.com/linux/centos/docker-ce.repo
+        dest: /etc/yum.repos.d/docker-ce.repo
+      become: yes
+ 
     - name: Install Docker
-      shell: /root/install_docker.sh
-      when: docker_check.stderr.find('service could not be found') != -1
-
-    - name: Remove the Docker installer file.
-      file:
-        state: absent
-        path: /root/install_docker.sh
-    - name: Install docker-py python module
-      pip:
-        name: docker-py
-        state: present
-
-    - name: Enable the Docker daemon in systemd
-      systemd:
-        name: docker
-        enabled: yes
-        masked: no
-
-    - name: Start the Docker daemon
-      systemd:
+      package:
+        name: docker-ce
+        state: latest
+      become: yes
+ 
+    - name: Start Docker service
+      service:
         name: docker
         state: started
-        masked: no
+        enabled: yes
+      become: yes
+      ignore_errors: yes
 
     - name: Check if Docker Compose is installed
       command: docker-compose --version
