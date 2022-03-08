@@ -79,7 +79,8 @@ pipeline {
         
         stage('Docker deploy with ansible'){
             steps{
-                ansiblePlaybook credentialsId: 'srv102_root_pass', disableHostKeyChecking: true, extras: '-e DOCKER_TAG="${DOCKER_TAG}"', installation: 'ansible', inventory: 'inventory.yaml', playbook: 'playbook.yaml'
+                ansiblePlaybook credentialsId: 'srv102_root_pass', disableHostKeyChecking: true, installation: 'ansible', inventory: 'inventory.yaml', playbook: 'playbook_centos_install_docker.yaml'
+                ansiblePlaybook credentialsId: 'srv102_root_pass', disableHostKeyChecking: true, extras: '-e DOCKER_TAG="${DOCKER_TAG}" -e DOCKER_IMAGE="${DOCKER_IMAGE}" -e DOCKER_REGISTRY="${DOCKER_REGISTRY}" -e DOCKER_USERNAME="${DOCKER_USERNAME}" -e DOCKER_PASSWORD="${DOCKER_PASSWORD}" ', installation: 'ansible', inventory: 'inventory.yaml', playbook: 'playbook_run_app.yaml'
             }
         }
     }
