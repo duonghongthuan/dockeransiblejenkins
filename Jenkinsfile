@@ -31,34 +31,34 @@ pipeline {
             }
         }
 
-        stage("Unit test") {
-            steps {
-                sh 'php artisan test'
-            }
-        }
+        // stage("Unit test") {
+        //     steps {
+        //         sh 'php artisan test'
+        //     }
+        // }
 
-        stage("Code coverage") {
-            steps {
-                sh "vendor/bin/phpunit --coverage-html 'reports/coverage'"
-            }
-        }
+        // stage("Code coverage") {
+        //     steps {
+        //         sh "vendor/bin/phpunit --coverage-html 'reports/coverage'"
+        //     }
+        // }
 
-        stage('SonarQube analysis') {
-            environment {
-                SCANNER_HOME = tool 'sonarqube-scanner'
-            }
-            steps {
-                withSonarQubeEnv(credentialsId: 'sonarqube_access_token', installationName: 'sonarqube-container') {
-                    sh '''$SCANNER_HOME/bin/sonar-scanner \
-                    -Dsonar.projectKey=laravel-ansible-docker \
-                    -Dsonar.projectName=laravel-ansible-docker \
-                    -Dsonar.sources=app/ \
-                    -Dsonar.language=php \
-                    -Dsonar.exclusions=app/Providers/** \
-                    -Dsonar.projectVersion=${BUILD_NUMBER}-${GIT_COMMIT_SHORT}'''
-                }
-            }
-        }
+        // stage('SonarQube analysis') {
+        //     environment {
+        //         SCANNER_HOME = tool 'sonarqube-scanner'
+        //     }
+        //     steps {
+        //         withSonarQubeEnv(credentialsId: 'sonarqube_access_token', installationName: 'sonarqube-container') {
+        //             sh '''$SCANNER_HOME/bin/sonar-scanner \
+        //             -Dsonar.projectKey=laravel-ansible-docker \
+        //             -Dsonar.projectName=laravel-ansible-docker \
+        //             -Dsonar.sources=app/ \
+        //             -Dsonar.language=php \
+        //             -Dsonar.exclusions=app/Providers/** \
+        //             -Dsonar.projectVersion=${BUILD_NUMBER}-${GIT_COMMIT_SHORT}'''
+        //         }
+        //     }
+        // }
 
         stage("Docker build") {
             steps {
@@ -79,7 +79,7 @@ pipeline {
         
         stage('Docker deploy with ansible'){
             steps{
-                ansiblePlaybook credentialsId: '102SSH', disableHostKeyChecking: true, extras: 'DOCKER_REGISTRY="${DOCKER_REGISTRY}" DOCKER_IMAGE="${DOCKER_IMAGE}" DOCKER_TAG="${DOCKER_TAG}"', installation: 'ansible', inventory: 'inventory.yaml', playbook: 'playbook.yaml'
+                ansiblePlaybook credentialsId: '102SSH', disableHostKeyChecking: true, extras: 'DOCKER_TAG="${DOCKER_TAG}"', installation: 'ansible', inventory: 'inventory.yaml', playbook: 'playbook.yaml'
             }
         }
     }
