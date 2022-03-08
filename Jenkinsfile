@@ -76,9 +76,5 @@ pipeline {
                 sh "docker image rm ${DOCKER_IMAGE}:${DOCKER_TAG}"
             }
         }
-
-        stage("Deploy to staging use ansible") {
-            //echo "Exam"
-        }
     }
 }
