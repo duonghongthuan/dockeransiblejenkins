@@ -78,7 +78,7 @@ pipeline {
         }
 
         stage("Deploy to staging use ansible") {
-            echo "Exam"
+            //echo "Exam"
         }
     }
 }
