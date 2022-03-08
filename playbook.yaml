@@ -1,40 +1,45 @@
 ---
-- hosts: staging
-  become: True
+
+- name: Install Docker and Docker Compose on CentOS
+  hosts: staging
+  become: true
+
   tasks:
-    - name: Install yum utils
-      yum:
-        name: yum-utils
-        state: latest
- 
-    - name: Install device-mapper-persistent-data
-      yum:
-        name: device-mapper-persistent-data
-        state: latest
- 
-    - name: Install lvm2
-      yum:
-        name: lvm2
-        state: latest
- 
-    - name: Add Docker repo
+    - name: Upgrade all packages
+      yum: name=* state=latest
+
+    - name: Check if Docker is installed
+      command: systemctl status docker
+      register: docker_check
+      ignore_errors: yes
+
+    - name: Download the Docker installer
       get_url:
-        url: https://download.docker.com/linux/centos/docker-ce.repo
-        dest: /etc/yum.repos.d/docker-ce.repo
-      become: yes
- 
+        url: https://get.docker.com/
+        dest: /root/install_docker.sh
+        mode: 0700
+      when: docker_check.stderr.find('service could not be found') != -1
+
     - name: Install Docker
-      package:
-        name: docker-ce
-        state: latest
-      become: yes
- 
-    - name: Start Docker service
-      service:
+      shell: /root/install_docker.sh
+      when: docker_check.stderr.find('service could not be found') != -1
+
+    - name: Remove the Docker installer file.
+      file:
+        state: absent
+        path: /root/install_docker.sh
+
+    - name: Enable the Docker daemon in systemd
+      systemd:
+        name: docker
+        enabled: yes
+        masked: no
+
+    - name: Start the Docker daemon
+      systemd:
         name: docker
         state: started
-        enabled: yes
-      become: yes
+        masked: no
 
     - name: Check if Docker Compose is installed
       command: docker-compose --version
@@ -49,7 +54,6 @@
       when:
         - docker_compose_check.msg is defined
         - docker_compose_check.msg.find('No such file or directory') != -1
-    - name: Log into private registry and force re-authorization
       docker_login:
         registry: registry.d2t.vn
         username: duonghongthuan
