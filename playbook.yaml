@@ -60,7 +60,6 @@
         registry: registry.d2t.vn
         username: duonghongthuan
         password: abc123^%$
-        reauthorize: yes
     - name: Start the container
       docker:
         insecure_registry: true
