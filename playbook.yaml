@@ -48,6 +48,12 @@
       when:
         - docker_compose_check.msg is defined
         - docker_compose_check.msg.find('No such file or directory') != -1
+    - name: Log into private registry and force re-authorization
+      docker_login:
+        registry: registry.d2t.vn
+        username: duonghongthuan
+        password: abc123^%$
+        reauthorize: yes
     - name: Start the container
       docker:
         insecure_registry: true
