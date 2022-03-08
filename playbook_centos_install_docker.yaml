@@ -2,8 +2,8 @@
   gather_facts: 'No'
   hosts: staging
   tasks:
-    - debug: null
-      var: ansible_os_family
+    - debug:
+        var: ansible_os_family
     - name: Install yum utils
       yum:
         name: yum-utils
